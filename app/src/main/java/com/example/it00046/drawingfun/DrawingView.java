@@ -1,6 +1,7 @@
 package com.example.it00046.drawingfun;
 
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.view.View;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -13,6 +14,8 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.TypedValue;
 
+import java.util.ArrayList;
+import java.util.Objects;
 
 
 /**
@@ -30,6 +33,17 @@ public class DrawingView extends View {
     private Canvas drawCanvas;
     //canvas bitmap
     private Bitmap canvasBitmap;
+
+    // Experiment
+    private PointF startPoint, endPoint;
+    private boolean isDrawing;
+
+    private ArrayList<Linia> Linies = new ArrayList<Linia>();
+    class Linia{
+        public PointF Inici, Final;
+        public void Linia(){
+        }
+    }
 
     private float brushSize, lastBrushSize;
 
@@ -65,6 +79,8 @@ public class DrawingView extends View {
         drawCanvas = new Canvas(canvasBitmap);
     }
 
+    // La definida inicialment
+    /*
     @Override
     protected void onDraw(Canvas canvas) {
         //draw view
@@ -77,7 +93,7 @@ public class DrawingView extends View {
         //detect user touch
         float touchX = event.getX();
         float touchY = event.getY();
-        switch (event.getAction()) {
+        switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
                 drawPath.moveTo(touchX, touchY);
                 break;
@@ -94,6 +110,57 @@ public class DrawingView extends View {
         invalidate();
         return true;
     }
+    */
+    // Prova per dibuixar linies
+    @Override
+    protected void onDraw(Canvas canvas)
+    {
+        if(isDrawing)
+        {
+            canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, drawPaint);
+            // Pinto la resta de linies
+            for (int i=0; i<Linies.size(); i++){
+                Linia Aux = Linies.get(i);
+                canvas.drawLine(Aux.Inici.x, Aux.Inici.y, Aux.Final.x, Aux.Final.y, drawPaint);
+            }
+        }
+    }
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        //detect user touch
+        float touchX = event.getX();
+        float touchY = event.getY();
+        switch (event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                startPoint = new PointF(event.getX(), event.getY());
+                endPoint = new PointF();
+                isDrawing = true;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if(isDrawing){
+                    endPoint.x = event.getX();
+                    endPoint.y = event.getY();
+                    invalidate();
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if(isDrawing){
+                    endPoint.x = event.getX();
+                    endPoint.y = event.getY();
+                    isDrawing = false;
+                    // Nova linia
+                    Linia Lin = new Linia();
+                    Lin.Inici = startPoint;
+                    Lin.Final = endPoint;
+                    Linies.add(Lin);
+                }
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+    // Fi experiment
 
     public void setColor(String newColor){
         //set color
