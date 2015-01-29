@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.view.View.OnClickListener;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity  implements OnClickListener{
@@ -188,6 +190,8 @@ public class MainActivity extends ActionBarActivity  implements OnClickListener{
         }
         else if(view.getId()==R.id.save_btn){
             //save drawing
+            // De moment aprofito aquest codi per afegir un boto. Comentem lo que fa
+            /*
             AlertDialog.Builder saveDialog = new AlertDialog.Builder(this);
             saveDialog.setTitle("Save drawing");
             saveDialog.setMessage("Save drawing to device Gallery?");
@@ -217,6 +221,18 @@ public class MainActivity extends ActionBarActivity  implements OnClickListener{
                 }
             });
             saveDialog.show();
+            */
+            DrawingView myLayout = (DrawingView)findViewById(R.id.drawing);
+
+            Button myButton = new Button(this);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+            myButton.setLayoutParams(params);
+            myLayout.isDrawing = true;
+
+            myLayout.addView(myButton);
+
+            //myLayout.invalidate();
         }
     }
 }

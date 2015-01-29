@@ -13,6 +13,8 @@ import android.view.MotionEvent;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.TypedValue;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -21,7 +23,8 @@ import java.util.Objects;
 /**
  * Created by it00046 on 26/01/2015.
  */
-public class DrawingView extends View {
+//public class DrawingView extends View {
+public class DrawingView extends RelativeLayout {
 
     //drawing path
     private Path drawPath;
@@ -36,7 +39,7 @@ public class DrawingView extends View {
 
     // Experiment
     private PointF startPoint, endPoint;
-    private boolean isDrawing;
+    public boolean isDrawing;
 
     private ArrayList<Linia> Linies = new ArrayList<Linia>();
     class Linia{
@@ -118,6 +121,7 @@ public class DrawingView extends View {
         if(isDrawing)
         {
             canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, drawPaint);
+            canvas.drawCircle(endPoint.x, endPoint.y, 25, drawPaint);
             // Pinto la resta de linies
             for (int i=0; i<Linies.size(); i++){
                 Linia Aux = Linies.get(i);
