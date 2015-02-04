@@ -1,10 +1,16 @@
 package com.example.it00046.drawingfun;
 
+import android.content.ClipData;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -222,8 +228,10 @@ public class MainActivity extends ActionBarActivity  implements OnClickListener{
             });
             saveDialog.show();
             */
+
             DrawingView myLayout = (DrawingView)findViewById(R.id.drawing);
 
+            // Afegim un boto
             Button myButton = new Button(this);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
@@ -232,7 +240,79 @@ public class MainActivity extends ActionBarActivity  implements OnClickListener{
 
             myLayout.addView(myButton);
 
+            // Afegim una view Taula
+            View Taula = getLayoutInflater().inflate(R.layout.taula, null);
+            RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+            Taula.setLayoutParams(params2);
+            myLayout.addView(Taula);
             //myLayout.invalidate();
+
+            // Drag and drop
+            myButton.setOnTouchListener(new MyTouchListener());
+            Taula.setOnDragListener(new MyDragListener());
+
+        }
+    }
+
+    public void changeScene(View v){
+        Toast unsavedToast = Toast.makeText(getApplicationContext(),"Hola", Toast.LENGTH_SHORT);
+        unsavedToast.show();
+    }
+
+    private final class MyTouchListener implements View.OnTouchListener {
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+                view.startDrag(data, shadowBuilder, view, 0);
+                view.setVisibility(View.INVISIBLE);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    class MyDragListener implements View.OnDragListener {
+        Drawable enterShape = getResources().getDrawable(R.drawable.shape);
+        Drawable normalShape = getResources().getDrawable(R.drawable.shape);
+
+        @Override
+        public boolean onDrag(View v, DragEvent event) {
+            int action = event.getAction();
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    // do nothing
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    //v.setBackgroundDrawable(enterShape);
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    //v.setBackgroundDrawable(normalShape);
+                    break;
+                case DragEvent.ACTION_DROP:
+                    // Dropped, reassign View to ViewGroup
+                    /*
+                    View view = (View) event.getLocalState();
+                    ViewGroup owner = (ViewGroup) view.getParent();
+                    owner.removeView(view);
+                    LinearLayout container = (LinearLayout) v;
+                    container.addView(view);
+                    view.setVisibility(View.VISIBLE);
+                    */
+                    v.setBackgroundColor(Color.GREEN);
+                    v.invalidate();
+
+                    Toast unsavedToast = Toast.makeText(getApplicationContext(),"Drop " + v.getTag(), Toast.LENGTH_SHORT);
+                    unsavedToast.show();
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    //v.setBackgroundDrawable(normalShape);
+                default:
+                    break;
+            }
+            return true;
         }
     }
 }

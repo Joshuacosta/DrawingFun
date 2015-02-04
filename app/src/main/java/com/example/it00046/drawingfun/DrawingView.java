@@ -136,6 +136,7 @@ public class DrawingView extends RelativeLayout {
         float touchY = event.getY();
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
+                // Validem si estem damunt d
                 startPoint = new PointF(event.getX(), event.getY());
                 endPoint = new PointF();
                 isDrawing = true;
@@ -201,4 +202,7 @@ public class DrawingView extends RelativeLayout {
         drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         invalidate();
     }
+
+    // Drag and drop
+
 }
